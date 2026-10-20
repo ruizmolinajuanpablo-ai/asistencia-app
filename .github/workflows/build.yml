@@ -5,6 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-ios:
     name: Compilar iOS (IPA)
@@ -77,3 +80,26 @@ jobs:
           name: app-web
           path: asistencia_app/build/web/
           retention-days: 30
+
+  release:
+    name: Publicar .ipa en Releases
+    needs: build-ios
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar .ipa compilado
+        uses: actions/download-artifact@v4
+        with:
+          name: app-ios-ipa
+
+      - name: Crear o actualizar release "latest"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view latest >/dev/null 2>&1; then
+            gh release upload latest asistencia-app.ipa --clobber
+          else
+            gh release create latest asistencia-app.ipa \
+              --title "Última versión de la app" \
+              --notes "Compilación automática desde main. Descarga asistencia-app.ipa e instálala con AltStore o Sideloadly."
+          fi
+          echo "Release disponible en https://github.com/${GITHUB_REPOSITORY}/releases/latest"
