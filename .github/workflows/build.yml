@@ -94,6 +94,7 @@ jobs:
       - name: Crear o actualizar release "latest"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           if gh release view latest >/dev/null 2>&1; then
             gh release upload latest asistencia-app.ipa --clobber
