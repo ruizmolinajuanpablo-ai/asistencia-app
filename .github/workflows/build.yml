@@ -35,11 +35,19 @@ jobs:
         working-directory: asistencia_app
         run: flutter build ipa --release --no-codesign
 
-      - name: Subir app iOS (xcarchive) como artefacto
+      - name: Empaquetar .ipa instalable
+        run: |
+          APP=$(find asistencia_app/build/ios/archive -name Runner.app -type d | head -1)
+          mkdir -p /tmp/ipa/Payload
+          cp -R "$APP" /tmp/ipa/Payload/
+          cd /tmp/ipa && zip -qry "$GITHUB_WORKSPACE/asistencia-app.ipa" Payload
+          ls -lh "$GITHUB_WORKSPACE/asistencia-app.ipa"
+
+      - name: Subir .ipa como artefacto
         uses: actions/upload-artifact@v4
         with:
-          name: app-ios-xcarchive
-          path: asistencia_app/build/ios/archive/*.xcarchive
+          name: app-ios-ipa
+          path: asistencia-app.ipa
           retention-days: 30
 
   build-web:
