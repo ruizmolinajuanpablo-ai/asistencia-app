@@ -1,0 +1,71 @@
+name: Compilar app iOS y Web
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: Compilar iOS (IPA)
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.24.5'
+          cache: true
+
+      - name: Dependencias
+        working-directory: asistencia_app
+        run: flutter pub get
+
+      - name: Análisis de código
+        working-directory: asistencia_app
+        run: flutter analyze --no-fatal-infos
+
+      - name: Pruebas
+        working-directory: asistencia_app
+        run: flutter test
+
+      - name: Compilar IPA (sin firmar)
+        working-directory: asistencia_app
+        run: flutter build ipa --release --no-codesign
+
+      - name: Subir IPA como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-ios-ipa
+          path: asistencia_app/build/ios/ipa/*.ipa
+          retention-days: 30
+
+  build-web:
+    name: Compilar app web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.24.5'
+          cache: true
+
+      - name: Dependencias
+        working-directory: asistencia_app
+        run: flutter pub get
+
+      - name: Compilar web
+        working-directory: asistencia_app
+        run: flutter build web --release --base-href /app/
+
+      - name: Subir app web como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-web
+          path: asistencia_app/build/web/
+          retention-days: 30

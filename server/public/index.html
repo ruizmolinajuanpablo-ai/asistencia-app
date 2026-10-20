@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel del Docente - Asistencia y Notas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>📘 Panel del Docente</h1>
+  <div id="header-right">
+    <span id="netinfo"></span>
+    <a href="/app/" target="_blank" class="btn small" style="text-decoration:none;margin-right:12px;">📱 App alumnos (web)</a>
+    <button id="btn-logout" class="btn secondary hidden">Salir</button>
+  </div>
+</header>
+
+<main>
+  <!-- LOGIN -->
+  <section id="view-login" class="card">
+    <h2>Iniciar sesión</h2>
+    <label>Correo <input type="email" id="login-email" value="docente@escuela.local"></label>
+    <label>Contraseña <input type="password" id="login-password" value="docente123"></label>
+    <button id="btn-login" class="btn">Entrar</button>
+    <p id="login-msg" class="error"></p>
+  </section>
+
+  <!-- PANEL -->
+  <section id="view-panel" class="hidden">
+    <nav class="tabs">
+      <button class="tab active" data-tab="students">Alumnos</button>
+      <button class="tab" data-tab="qr">Red WiFi / QR</button>
+    </nav>
+
+    <!-- ALUMNOS -->
+    <div id="tab-students">
+      <div class="card">
+        <h2>Alumnos registrados</h2>
+        <table id="students-table">
+          <thead><tr><th>Nombre</th><th>Correo</th><th>Registro</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p id="students-empty" class="muted hidden">Aún no hay alumnos registrados en la app.</p>
+      </div>
+
+      <div id="student-detail" class="card hidden">
+        <button id="btn-back" class="btn secondary small">← Volver</button>
+        <h2 id="student-name"></h2>
+        <h3>Asistencia</h3>
+        <table id="att-table">
+          <thead><tr><th>Fecha</th><th>Estado</th><th>Nota</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <form id="att-form" class="inline-form">
+          <input type="date" id="att-date" required>
+          <select id="att-status">
+            <option value="presente">Presente</option>
+            <option value="ausente">Ausente</option>
+            <option value="tardanza">Tardanza</option>
+            <option value="justificada">Justificada</option>
+          </select>
+          <input type="text" id="att-note" placeholder="Nota (opcional)">
+          <button class="btn small">Guardar</button>
+        </form>
+
+        <h3>Actividades</h3>
+        <table id="act-table">
+          <thead><tr><th>Nombre</th><th>Nota</th><th>Máx</th><th>Fecha</th><th>Observación</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <form id="act-form" class="inline-form">
+          <input type="text" id="act-name" placeholder="Nombre" required>
+          <input type="number" id="act-score" placeholder="Nota" step="0.1" min="0" required>
+          <input type="number" id="act-max" placeholder="Máx" step="0.1" min="0.1" value="20" required>
+          <input type="date" id="act-date" required>
+          <input type="text" id="act-note" placeholder="Nota textual">
+          <button class="btn small">Agregar</button>
+        </form>
+
+        <h3>Exámenes</h3>
+        <table id="exam-table">
+          <thead><tr><th>Nombre</th><th>Nota</th><th>Máx</th><th>Fecha</th><th>Observación</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <form id="exam-form" class="inline-form">
+          <input type="text" id="exam-name" placeholder="Nombre" required>
+          <input type="number" id="exam-score" placeholder="Nota" step="0.1" min="0" required>
+          <input type="number" id="exam-max" placeholder="Máx" step="0.1" min="0.1" value="20" required>
+          <input type="date" id="exam-date" required>
+          <input type="text" id="exam-note" placeholder="Nota textual">
+          <button class="btn small">Agregar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- QR -->
+    <div id="tab-qr" class="hidden">
+      <div class="card">
+        <h2>Compartir red WiFi por QR</h2>
+        <p class="muted">Los alumnos escanean este QR con la app: se conectan a la red WiFi y la app configura sola la IP del servidor.</p>
+        <label>Nombre de la red (SSID) <input type="text" id="qr-ssid" placeholder="MiWiFi"></label>
+        <label>Contraseña <input type="text" id="qr-pass" placeholder="contraseña"></label>
+        <button id="btn-qr" class="btn">Generar QR</button>
+        <div id="qr-result" class="hidden">
+          <img id="qr-img" alt="QR WiFi">
+          <p>O conecta manualmente a: <code id="qr-url"></code></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
