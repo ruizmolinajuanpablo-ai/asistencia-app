@@ -35,11 +35,11 @@ jobs:
         working-directory: asistencia_app
         run: flutter build ipa --release --no-codesign
 
-      - name: Subir IPA como artefacto
+      - name: Subir app iOS (xcarchive) como artefacto
         uses: actions/upload-artifact@v4
         with:
-          name: app-ios-ipa
-          path: asistencia_app/build/ios/ipa/*.ipa
+          name: app-ios-xcarchive
+          path: asistencia_app/build/ios/archive/*.xcarchive
           retention-days: 30
 
   build-web:
